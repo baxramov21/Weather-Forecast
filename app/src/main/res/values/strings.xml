@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Weather Forecast</string>
+    <string name="weather_state_image">Weather state image</string>
+    <string name="search_for_city">Search for a city</string>
 </resources>
