@@ -3,12 +3,12 @@ package com.baxramov.data.network.dto
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class DayForecastDto(
-    @SerializedName("date")
+data class WeatherConditionDto(
+    @SerializedName("text")
     @Expose
-    var date: String? = null,
+    var text: String? = null,
 
-    @SerializedName("day")
+    @SerializedName("icon")
     @Expose
-    var weatherInfo: WeatherInfoDto? = null
+    var icon: String? = null
 )

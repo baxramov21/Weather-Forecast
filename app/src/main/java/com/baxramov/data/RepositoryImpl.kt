@@ -1,22 +1,43 @@
 package com.baxramov.data
 
+import android.content.Context
+import com.baxramov.data.converters.Mapper
 import com.baxramov.data.network.ApiFactory
 import com.baxramov.domain.Repository
 import com.baxramov.domain.WeatherInfoEntity
+import retrofit2.HttpException
+import java.io.IOException
 
-class RepositoryImpl : Repository {
+class RepositoryImpl(private val context: Context) : Repository {
 
     private val apiService = ApiFactory.apiService
+    private val mapper = Mapper()
 
-    override fun getLocation(): String {
-        TODO("Not yet implemented")
-    }
+    override fun getWeatherForecast(
+        location: String,
+        forecastLengthInDays: String,
+        apiKey: String
+    ): List<WeatherInfoEntity> {
 
-    override fun getDate(): Int {
-        TODO("Not yet implemented")
-    }
+        try {
+            val weatherGeneralInfo =
+                apiService.getWeatherGeneralInfo(
+                    location,
+                    forecastLengthInDays,
+                    apiKey
+                )
 
-    override fun getWeatherForecast(dayNumber: Int): WeatherInfoEntity {
-        TODO("Not yet implemented")
+            val weatherForecastsDtoList =
+                weatherGeneralInfo.forecast?.forecastsList ?: return emptyList()
+
+            val weatherDataContainerList =
+                mapper.mapForecastListToDataContainerList(weatherForecastsDtoList)
+
+            return mapper.mapDataContainerListToEntityList(weatherDataContainerList)
+        } catch (exception: IOException) {
+            return emptyList()
+        } catch (exception: HttpException) {
+            return emptyList()
+        }
     }
 }
