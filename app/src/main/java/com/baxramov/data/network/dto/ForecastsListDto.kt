@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
 data class ForecastsListDto (
     @SerializedName("forecastday")
     @Expose
-    var forecastsList: List<ForecastDay>? = null
+    var forecastsList: List<DayForecastDto>? = null
 )
