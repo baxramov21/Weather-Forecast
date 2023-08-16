@@ -3,7 +3,7 @@ package com.baxramov.data.network.dto
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ForecastDay (
+data class DayForecastDto(
     @SerializedName("date")
     @Expose
     var date: String? = null,
