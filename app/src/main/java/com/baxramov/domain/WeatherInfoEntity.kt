@@ -1,9 +1,10 @@
 package com.baxramov.domain
 
 data class WeatherInfoEntity(
-    val temperature: Float,
-    val wind: Float,
-    val humidity: Int,
+    val date: String,
+    val temperature: Double,
+    val wind: Double,
+    val humidity: Double,
     val weatherCondition: String,
     val weatherConditionIcon: String
 )

@@ -2,5 +2,9 @@ package com.baxramov.domain
 
 interface Repository {
 
-    fun getWeatherForecast(location: String, forecastLengthInDays: Int, apiKey: String): WeatherInfoEntity
+    fun getLocation(): String
+
+    fun getDate(): Int
+
+    fun getWeatherForecast(dayNumber: Int): WeatherInfoEntity
 }
