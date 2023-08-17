@@ -20,6 +20,7 @@ class RepositoryImpl(private val context: Context) : Repository {
     ): List<WeatherInfoEntity> {
 
         try {
+            // todo вынеси вызов usecase во вьюмодель и обрабатывай там
             val weatherGeneralInfo =
                 apiService.getWeatherGeneralInfo(
                     location,
@@ -35,6 +36,8 @@ class RepositoryImpl(private val context: Context) : Repository {
 
             return mapper.mapDataContainerListToEntityList(weatherDataContainerList)
         } catch (exception: IOException) {
+            //todo: добавь обработку ошибок. покажи пользователю тост хотя бы и залогируй ошибку
+            //а можно не тост, а картинку
             return emptyList()
         } catch (exception: HttpException) {
             return emptyList()

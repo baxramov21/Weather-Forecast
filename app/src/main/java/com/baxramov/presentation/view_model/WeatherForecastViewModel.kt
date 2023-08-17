@@ -4,10 +4,13 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.baxramov.data.RepositoryImpl
 import com.baxramov.data.repository.RepositoryImpl
+import com.baxramov.domain.WeatherInfoEntity
 import com.baxramov.domain.use_case.GetWeatherForecastUseCase
 import com.baxramov.domain.entity.WeatherInfoEntity
 
+// todo
 class WeatherForecastViewModel(application: Application) : ViewModel() {
 
     private val repository = RepositoryImpl()

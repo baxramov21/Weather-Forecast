@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.baxramov.R
 import com.baxramov.databinding.WeatherForecastItemBinding
+import com.baxramov.domain.WeatherInfoEntity
 import com.baxramov.domain.entity.WeatherInfoEntity
 import com.bumptech.glide.Glide
 
