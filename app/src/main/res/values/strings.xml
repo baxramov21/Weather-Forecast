@@ -3,4 +3,7 @@
     <string name="weather_state_image">Weather state image</string>
     <string name="search_for_city">Search for a city</string>
     <string name="city_not_found">City not found</string>
+    <string name="enter_city_name_warning">Please enter the name of the city whose weather you want to know</string>
+    <string name="wind">Wind: %s</string>
+    <string name="humidity">Humidity: %s</string>
 </resources>
