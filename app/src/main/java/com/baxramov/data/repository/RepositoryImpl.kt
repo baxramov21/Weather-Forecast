@@ -33,9 +33,11 @@ class RepositoryImpl() : Repository {
                 mapper.mapForecastListToDataContainerList(weatherForecastsDtoList)
 
             return mapper.mapDataContainerListToEntityList(weatherDataContainerList)
+
         } catch (exception: IOException) {
             Log.e(TAG, "IO Exception: ${exception.message}")
             return emptyList()
+
         } catch (exception: HttpException) {
             Log.e(TAG, "Http exception: ${exception.message}")
             return emptyList()
