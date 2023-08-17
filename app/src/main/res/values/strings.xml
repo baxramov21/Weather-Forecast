@@ -6,4 +6,8 @@
     <string name="enter_city_name_warning">Please enter the name of the city whose weather you want to know</string>
     <string name="wind">Wind: %s</string>
     <string name="humidity">Humidity: %s</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="please_check_your_internet_connection_and_try_again">Please check your internet connection and try again</string>
+    <string name="check_city_name">Make sure that the city name is correct</string>
+    <string name="enter_the_name_of_the_city_which_whose_weather_you_want_to_know">Enter the name of the city to know it\'s weather </string>
 </resources>

@@ -1,6 +1,8 @@
 package com.baxramov.domain.repository
 
 import com.baxramov.domain.entity.WeatherInfoEntity
+import com.baxramov.domain.entity.Result
+
 
 interface Repository {
 
@@ -8,5 +10,5 @@ interface Repository {
         location: String,
         forecastLengthInDays: String,
         apiKey: String
-    ): List<WeatherInfoEntity>
+    ): Result<List<WeatherInfoEntity>>
 }

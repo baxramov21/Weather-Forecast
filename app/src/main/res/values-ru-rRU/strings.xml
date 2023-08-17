@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Weather Forecast</string>
+    <string name="weather_state_image">Изображение состояния погоды</string>
+    <string name="search_for_city">Поиск города</string>
+    <string name="city_not_found">Город не найден</string>
+    <string name="enter_city_name_warning">Пожалуйста, введите название города, погоду которого вы хотите узнать</string>
+    <string name="wind">Ветер: %s</string>
+    <string name="humidity">Влажность: %s</string>
+    <string name="no_internet_connection">Нет соединения с интернетом</string>
+    <string name="please_check_your_internet_connection_and_try_again">Проверьте подключение к Интернету и повторите попытку.</string>
+    <string name="check_city_name">Убедитесь, что название города указано правильно</string>
+    <string name="enter_the_name_of_the_city_which_whose_weather_you_want_to_know">Введите название города, чтобы узнать погоду</string>
+</resources>

@@ -3,12 +3,13 @@ package com.baxramov.data.repository
 import android.util.Log
 import com.baxramov.data.converters.Mapper
 import com.baxramov.data.network.ApiFactory
-import com.baxramov.domain.repository.Repository
 import com.baxramov.domain.entity.WeatherInfoEntity
+import com.baxramov.domain.repository.Repository
+import com.baxramov.domain.entity.Result
 import retrofit2.HttpException
 import java.io.IOException
 
-class RepositoryImpl() : Repository {
+class RepositoryImpl : Repository {
 
     private val apiService = ApiFactory.apiService
     private val mapper = Mapper()
@@ -17,8 +18,8 @@ class RepositoryImpl() : Repository {
         location: String,
         forecastLengthInDays: String,
         apiKey: String
-    ): List<WeatherInfoEntity> {
-        try {
+    ): Result<List<WeatherInfoEntity>> {
+        return try {
             val weatherGeneralInfo =
                 apiService.getWeatherGeneralInfo(
                     location,
@@ -32,19 +33,24 @@ class RepositoryImpl() : Repository {
             val weatherDataContainerList =
                 mapper.mapForecastListToDataContainerList(weatherForecastsDtoList)
 
-            return mapper.mapDataContainerListToEntityList(weatherDataContainerList)
+            val entityList = mapper.mapDataContainerListToEntityList(weatherDataContainerList)
+
+            Result.Success(entityList)
 
         } catch (exception: IOException) {
             Log.e(TAG, "IO Exception: ${exception.message}")
-            return emptyList()
+            Result.Error(INTERNET_ERROR)
 
         } catch (exception: HttpException) {
             Log.e(TAG, "Http exception: ${exception.message}")
-            return emptyList()
+            Result.Error(INCORRECT_CITY_NAME)
         }
     }
 
+
     companion object {
         private const val TAG = "RepositoryImpl"
+        const val INTERNET_ERROR = "Check internet connection"
+        const val INCORRECT_CITY_NAME = "Incorrect city name. Check and try again"
     }
 }
