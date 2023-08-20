@@ -7,6 +7,13 @@
     android:background="@color/screen_background"
     tools:context=".presentation.screens.MainActivity">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineInternetErrorBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view_location"
@@ -30,7 +37,7 @@
         app:layout_constraintGuide_percent="0.15" />
 
     <TextView
-        android:id="@+id/tv_city_name"
+        android:id="@+id/tv_city_name_presenter"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -45,7 +52,7 @@
         tools:text="Moscow" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_weather_info_list"
+        android:id="@+id/rcv_forecast_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
@@ -53,11 +60,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_city_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_city_name_presenter"
         tools:listitem="@layout/weather_forecast_item" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progressBarLoading"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,22 +80,25 @@
         android:layout_height="180dp"
         android:contentDescription="@string/no_internet_connection"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="@id/guidelineInternetErrorBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_signal_cellular_connected_no_internet_4_bar_24" />
 
     <TextView
-        android:id="@+id/tv_check_internet_connection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/tv_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="@string/please_check_your_internet_connection_and_try_again"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineInternetErrorBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageViewNoInternetConnection" />

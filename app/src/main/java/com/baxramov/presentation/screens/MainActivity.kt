@@ -1,8 +1,8 @@
 package com.baxramov.presentation.screens
 
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.ProgressBar
+import android.view.Gravity
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
 
     private val weatherForecastAdapter = WeatherForecastAdapter(this)
 
+    private var isInternetAvailable = true
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,41 +49,39 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         searchForCity(binding.searchViewLocation)
         observeWeatherForecastsList()
-        observeInternetError()
-        binding.tvCityName.text = viewModel.getCityName()
+        observeErrors(savedInstanceState)
+        binding.tvCityNamePresenter.text = viewModel.getCityName()
     }
 
     private fun searchForCity(searchView: SearchView) {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
 
-                val progressBarVisibility: Int
-                if (query != null && query.trim().isNotEmpty()) {
+                if (query?.trim()?.isNotEmpty() == true) {
                     coroutineScope.launch {
                         delay(300)
                         viewModel.getWeatherForecast(query, FORECAST_LENGTH)
                         viewModel.setCityName(query.uppercase())
                     }
-                    makeRecyclerViewVisible()
-                    progressBarVisibility = ProgressBar.VISIBLE
-                    binding.tvCityName.text = query.trim().uppercase()
+                    changeViewsVisibility(
+                        tvCityNamePresenterVisible = true,
+                        progressBarLoadingVisible = true
+                    )
+                    binding.tvCityNamePresenter.text = query.trim().uppercase()
                 } else {
-                    makeRecyclerViewInvisible()
-                    progressBarVisibility = ProgressBar.INVISIBLE
+                    changeViewsVisibility(tvEnterCityNameVisible = true)
                     showToast(getString(R.string.enter_city_name_warning))
                 }
-                binding.progressBar.visibility = progressBarVisibility
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText?.isEmpty() == true) {
-                    hideCheckInternetStatus()
-                    changeTvVisibilityDependingOnRcv(binding)
+                    changeViewsVisibility(tvEnterCityNameVisible = true)
                 } else {
                     binding.tvEnterCityName.visibility = TextView.INVISIBLE
                 }
-                return false
+                return true
             }
         })
     }
@@ -89,29 +89,38 @@ class MainActivity : AppCompatActivity() {
     private fun observeWeatherForecastsList() {
         viewModel.lvWeatherForecastList.observe(this) {
             weatherForecastAdapter.submitList(it)
-            makeRecyclerViewVisible()
+            changeViewsVisibility(tvCityNamePresenterVisible = true, rcvForecastListVisible = true)
         }
-
-
     }
 
-    private fun observeInternetError() {
-        viewModel.lvError.observe(this) {
-            val message: String
-            if (it == INTERNET_ERROR && weatherForecastAdapter.currentList.isEmpty()) {
-                message =
+    private fun observeErrors(savedInstanceState: Bundle?) {
+        viewModel.lvNoInternetError.observe(this) {
+            if (getInternetState(savedInstanceState)) {
+                binding.tvError.gravity = Gravity.CENTER
+                binding.tvError.text =
                     getString(R.string.please_check_your_internet_connection_and_try_again)
-                showCheckInternetStatus()
-            } else {
-                showCheckInternetStatus()
-                message = getString(R.string.check_city_name)
+                changeViewsVisibility(tvErrorVisible = true, imgNoInternetVisible = true)
+                isInternetAvailable = false
             }
-            binding.tvCheckInternetConnection.text = message
+        }
+
+        viewModel.lvIncorrectCityNameError.observe(this) {
+            binding.tvError.gravity = Gravity.CENTER_HORIZONTAL
+            binding.tvError.text = getString(R.string.check_city_name)
+            changeViewsVisibility(tvErrorVisible = true)
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(INTERNET_STATE, isInternetAvailable)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun getInternetState(savedInstanceState: Bundle?): Boolean =
+        savedInstanceState?.getBoolean(INTERNET_STATE) ?: isInternetAvailable
 
     private fun setupRecyclerView() {
-        val recyclerView = binding.rcvWeatherInfoList
+        val recyclerView = binding.rcvForecastList
         recyclerView.adapter = weatherForecastAdapter
         recyclerView.layoutManager = LinearLayoutManager(
             this,
@@ -121,48 +130,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun changeTvVisibilityDependingOnRcv(binding: ActivityMainBinding) {
-        if (binding.rcvWeatherInfoList.visibility == RecyclerView.VISIBLE) {
+        if (binding.rcvForecastList.visibility == RecyclerView.VISIBLE) {
             binding.tvEnterCityName.visibility = TextView.INVISIBLE
         } else {
             binding.tvEnterCityName.visibility = TextView.VISIBLE
         }
     }
 
-    private fun makeRecyclerViewVisible() {
-        binding.rcvWeatherInfoList.visibility = RecyclerView.VISIBLE
-        binding.tvCityName.visibility = TextView.VISIBLE
-
-        binding.progressBar.visibility = ProgressBar.INVISIBLE
-        binding.tvEnterCityName.visibility = TextView.INVISIBLE
-        binding.imageViewNoInternetConnection.visibility = ImageView.INVISIBLE
-        binding.tvCheckInternetConnection.visibility = TextView.INVISIBLE
+    private fun changeViewsVisibility(
+        tvErrorVisible: Boolean = false,
+        tvCityNamePresenterVisible: Boolean = false,
+        tvEnterCityNameVisible: Boolean = false,
+        imgNoInternetVisible: Boolean = false,
+        rcvForecastListVisible: Boolean = false,
+        progressBarLoadingVisible: Boolean = false
+    ) {
+        with(binding) {
+            tvError.visibility = getViewVisibility(tvErrorVisible)
+            tvCityNamePresenter.visibility = getViewVisibility(tvCityNamePresenterVisible)
+            tvEnterCityName.visibility = getViewVisibility(tvEnterCityNameVisible)
+            imageViewNoInternetConnection.visibility = getViewVisibility(imgNoInternetVisible)
+            rcvForecastList.visibility = getViewVisibility(rcvForecastListVisible)
+            progressBarLoading.visibility = getViewVisibility(progressBarLoadingVisible)
+        }
     }
 
-    private fun makeRecyclerViewInvisible() {
-        binding.tvCityName.visibility = TextView.INVISIBLE
-        binding.rcvWeatherInfoList.visibility = RecyclerView.INVISIBLE
+    private fun getViewVisibility(visibility: Boolean): Int =
+        if (visibility) View.VISIBLE else View.INVISIBLE
 
-        binding.progressBar.visibility = ProgressBar.VISIBLE
-    }
-
-    private fun showCheckInternetStatus() {
-        binding.imageViewNoInternetConnection.visibility = ImageView.VISIBLE
-        binding.tvCheckInternetConnection.visibility = TextView.VISIBLE
-
-        binding.progressBar.visibility = ProgressBar.INVISIBLE
-        binding.rcvWeatherInfoList.visibility = RecyclerView.INVISIBLE
-        binding.tvCityName.visibility = TextView.INVISIBLE
-        binding.tvEnterCityName.visibility = TextView.INVISIBLE
-
-    }
-
-    private fun hideCheckInternetStatus() {
-        binding.imageViewNoInternetConnection.visibility = ImageView.INVISIBLE
-        binding.tvCheckInternetConnection.visibility = TextView.INVISIBLE
-
-        binding.tvEnterCityName.visibility = TextView.VISIBLE
-
-    }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -170,6 +165,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val FORECAST_LENGTH = "5"
-        const val INTERNET_ERROR = "Check internet connection"
+        private const val INTERNET_STATE = "is_internet_available"
     }
 }

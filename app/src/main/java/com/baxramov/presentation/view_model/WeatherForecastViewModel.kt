@@ -23,9 +23,13 @@ class WeatherForecastViewModel(application: Application) : ViewModel() {
     val lvWeatherForecastList: LiveData<List<WeatherInfoEntity>>
         get() = _lvWeatherForecastList
 
-    private val _lvError = MutableLiveData<String>()
-    val lvError: LiveData<String>
-        get() = _lvError
+    private val _lvNoInternetError = MutableLiveData<String>()
+    val lvNoInternetError: LiveData<String>
+        get() = _lvNoInternetError
+
+    private val _lvIncorrectCityNameError = MutableLiveData<String>()
+    val lvIncorrectCityNameError: LiveData<String>
+        get() = _lvIncorrectCityNameError
 
     private var cityName: String = ""
 
@@ -41,8 +45,11 @@ class WeatherForecastViewModel(application: Application) : ViewModel() {
                 is Result.Success -> {
                     _lvWeatherForecastList.postValue(result.data as List<WeatherInfoEntity>)
                 }
-                is Result.Error -> {
-                    _lvError.postValue(result.message)
+                is Result.InternetError -> {
+                    _lvNoInternetError.postValue(result.message)
+                }
+                is Result.IncorrectCityNameError -> {
+                    _lvIncorrectCityNameError.postValue(result.message)
                 }
             }
         }

@@ -39,14 +39,13 @@ class RepositoryImpl : Repository {
 
         } catch (exception: IOException) {
             Log.e(TAG, "IO Exception: ${exception.message}")
-            Result.Error(INTERNET_ERROR)
+            Result.InternetError(INTERNET_ERROR)
 
         } catch (exception: HttpException) {
             Log.e(TAG, "Http exception: ${exception.message}")
-            Result.Error(INCORRECT_CITY_NAME)
+            Result.IncorrectCityNameError(INCORRECT_CITY_NAME)
         }
     }
-
 
     companion object {
         private const val TAG = "RepositoryImpl"
